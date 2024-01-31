@@ -64,11 +64,7 @@ const images = [
   },
 ];
 
-const myContainer = document.querySelector('.gallery')
-
-
-
-
+const myContainer = document.querySelector('.gallery');
 
 function myMarkup() {
     const markup = images.map(image => {
@@ -87,12 +83,36 @@ function myMarkup() {
 }
 
 myContainer.innerHTML = myMarkup();
-myContainer.addEventListener('click', function (e) {
-    e.preventDefault();
-    if (e.target.classList.contains('gallery-link')) {
-        const bigFoto = e.target.getAttribute('href');
-        return bigFoto;
-    }
+
+const galleryImages = document.querySelectorAll('.gallery-image');
+const lightbox = basicLightbox.create(`
+    <div class="modal">
+        <img src="" alt="">
+    </div>
+`);
+
+function openModal(imageURL, imageAlt) {
+    const modalImage = lightbox.element().querySelector('img');
+    modalImage.setAttribute('src', imageURL);
+    modalImage.setAttribute('alt', imageAlt);
+    lightbox.show();
+}
+
+function closeModal() {
+    lightbox.close();
+}
+
+galleryImages.forEach(image => {
+    image.addEventListener('click', function(event) {
+        event.preventDefault();
+        const imageURL = this.getAttribute('data-source');
+        const imageAlt = this.getAttribute('alt');
+        openModal(imageURL, imageAlt);
+    });
 });
 
-// 7
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        closeModal();
+    }
+});
