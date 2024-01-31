@@ -105,8 +105,8 @@ function closeModal() {
 galleryImages.forEach(image => {
     image.addEventListener('click', function(event) {
         event.preventDefault();
-        const imageURL = this.getAttribute('data-source');
-        const imageAlt = this.getAttribute('alt');
+        const imageURL = image.getAttribute('data-source');
+        const imageAlt = image.getAttribute('alt');
         openModal(imageURL, imageAlt);
     });
 });
