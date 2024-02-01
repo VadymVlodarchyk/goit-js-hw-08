@@ -64,10 +64,15 @@ const images = [
   },
 ];
 
+function handleKeyDown(event) {
+    if (event.key === 'Escape') {
+        closeModal();
+    }
+}
 const myContainer = document.querySelector('.gallery');
 
 function myMarkup() {
-    const markup = images.map(image => {
+    return images.map(image => {
         return `<li class="gallery-item">
             <a class="gallery-link" href="${image.original}">
                 <img
@@ -79,17 +84,21 @@ function myMarkup() {
             </a>
         </li>`;
     }).join('\n\n');
-    return markup;
 }
 
 myContainer.innerHTML = myMarkup();
 
-const galleryImages = document.querySelectorAll('.gallery-image');
 const lightbox = basicLightbox.create(`
     <div class="modal">
         <img src="" alt="">
-    </div>
-`);
+    </div>`, {
+    onShow: (instance) => {
+        document.addEventListener('keydown', handleKeyDown);
+    },
+    onClose: (instance) => {
+        document.removeEventListener('keydown', handleKeyDown);
+    }
+});
 
 function openModal(imageURL, imageAlt) {
     const modalImage = lightbox.element().querySelector('img');
@@ -102,17 +111,13 @@ function closeModal() {
     lightbox.close();
 }
 
-galleryImages.forEach(image => {
-    image.addEventListener('click', function(event) {
-        event.preventDefault();
-        const imageURL = image.getAttribute('data-source');
-        const imageAlt = image.getAttribute('alt');
-        openModal(imageURL, imageAlt);
-    });
-});
+myContainer.addEventListener('click', function (event) {
+    event.preventDefault();
+    const target = event.target;
 
-document.addEventListener('keydown', function(event) {
-    if (event.key === 'Escape') {
-        closeModal();
+    if (target.classList.contains('gallery-image')) {
+        const imageURL = target.getAttribute('data-source');
+        const imageAlt = target.getAttribute('alt');
+        openModal(imageURL, imageAlt);
     }
 });
